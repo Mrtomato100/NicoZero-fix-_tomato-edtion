@@ -1,6 +1,101 @@
-*.class
+// ==UserScript==
+// @name         ZeroFix
+// @namespace    applest.net
+// @version      0.1
+// @description  ZeroFix改良版
+// @include      http://www.nicovideo.jp/watch/*
+// @license      MIT License(http://en.wikipedia.org/wiki/MIT_License)
+// ==/UserScript==
 
-# Package Files #
-*.jar
-*.war
-*.ear
+/*********************************************
+ * 右上の[raw]をクリックしてダウンロード開始 *
+ *********************************************/
+
+/*
+本コードの著作権は@toriimiyukkiにあります。
+本ソフトウェアのライセンスは MIT License(http://en.wikipedia.org/wiki/MIT_License) とします。
+*/
+
+(function() {
+  var $ = function(name) { return document.querySelector(name); }
+
+	// タイトルの縮小
+	$('.videoDetailExpand').getElementsByTagName('h2')[0].style.fontSize = '140%';
+	$('.videoDetailExpand').style.height = 'auto';
+
+	// タグの複数段表示
+	$('.filter').parentNode.removeChild($('.filter'));
+
+
+	// 市場エリアをpopStateによるページ遷移に対応するため、タイトルが変わったのをトリガーにする(あまりよろしくない)
+	var now_title = "";
+	setInterval(function(){
+		if(now_title == "" || $('#videoInfo .videoTitleText').textContent != now_title){
+			// 市場エリアを投稿者情報に
+			/// 市場の撤去
+			while($('#ichibaPanel').firstChild){
+				$('#ichibaPanel').removeChild($('#ichibaPanel').firstChild);
+			}
+			while($('#hiddenUserProfile').firstChild){
+				$('#hiddenUserProfile').removeChild($('#hiddenUserProfile').firstChild);
+			}
+			while($('#videoInfoHead .horizon').firstChild){
+				$('#videoInfoHead .horizon').removeChild($('#videoInfoHead .horizon').firstChild);
+			}
+
+
+
+			/// 投稿者情報の表示                       
+                        $('#ichibaPanel').appendChild($('#videoInfoHead').cloneNode(true));  
+                        $('#ichibaPanel').appendChild($('#videoStats').cloneNode(true));
+                        $('#ichibaPanel').appendChild($('#userProfile').cloneNode(true)); 
+
+                                     
+                        $('#ichibaPanel #videoStats').style.width = '240px';
+                        $('#ichibaPanel #hiddenUserProfile').style.width = '240px';
+                        $('#ichibaPanel #videoInfoHead').style.width = '240px';
+
+                        $('#ichibaPanel #userProfile').style.width = '240px';
+                        $('#ichibaPanel #videoShareLinks').style.width = '240px';
+
+
+
+
+			$('#ichibaPanel #videoInfoHead').style.backgroundColor = '#F6F6F6';
+			$('#ichibaPanel #videoInfoHead').style.border = '1px solid #CCCCCC';
+			$('#ichibaPanel #videoInfoHead').style.borderRadius = '3px';
+			$('#ichibaPanel #videoInfoHead').style.padding = '5px';
+			$('#ichibaPanel #videoStats').style.backgroundColor = '#F6F6F6';
+			$('#ichibaPanel #videoStats').style.border = '1px solid #CCCCCC';
+			$('#ichibaPanel #videoStats').style.borderRadius = '3px';
+			$('#ichibaPanel #videoStats').style.padding = '5px';
+			$('#ichibaPanel #userProfile').style.backgroundColor = '#F6F6F6';
+			$('#ichibaPanel #userProfile').style.border = '1px solid #CCCCCC';
+			$('#ichibaPanel #userProfile').style.borderRadius = '3px';
+			$('#ichibaPanel #userProfile').style.padding = '5px';
+			$('#ichibaPanel .userIcon').style.width = '64px';
+			$('#ichibaPanel .userIcon').style.height = '64px';
+			$('#playlist').style.height = '100px';
+
+			now_title = $('#videoInfo .videoTitleText').textContent;
+		}
+	}, 1000);
+
+	// コメント入力エリアを下に
+        $('#playerContainer').style.height = '600px';
+	$('#textMarquee').style.height = '100px';
+	$('.textMarqueeOuter').style.marginTop = '10px';
+	$('.handler').parentNode.removeChild($('.handler'));
+	$('.commentInner').style.width = 'auto';
+	$('.commentOuter').style.cssText = 'display: block !important; opacity: 1 !important;';
+	$('#textMarquee').insertBefore($('.commentInner'), $('.textMarqueeOuter'));
+	$('.commentOuter').className = 'commentOuter2';
+	$('.commandInput').getElementsByTagName('input')[0].style.color = '#fff';
+	$('.commentInput').getElementsByTagName('input')[0].style.color = '#fff';
+        $('.helpText').style.color = '#222';
+;
+
+
+	// フェードを無効化
+	$('.lightControllFilter').parentNode.removeChild($('.lightControllFilter'));
+})();
